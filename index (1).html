@@ -1,0 +1,173 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MS Consultoria em Agronegócio LTDA - Excelência em serviços para produtores rurais e frigoríficos.">
+  <title>MS Consultoria em Agronegócio LTDA</title>
+  <link href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="icon" href="https://via.placeholder.com/32x32.png?text=MS" type="image/png">
+</head>
+<body class="bg-gray-100 font-sans">
+  <!-- Header -->
+  <header class="bg-green-700 text-white py-4">
+    <div class="container mx-auto flex justify-between items-center px-4">
+      <h1 class="text-2xl font-bold">MS Consultoria em Agronegócio</h1>
+      <nav>
+        <ul class="flex space-x-6">
+          <li><a href="#home" class="hover:underline" aria-label="Ir para Home">Home</a></li>
+          <li><a href="#sobre" class="hover:underline" aria-label="Ir para Sobre">Sobre</a></li>
+          <li><a href="#servicos" class="hover:underline" aria-label="Ir para Serviços">Serviços</a></li>
+          <li><a href="#contato" class="hover:underline" aria-label="Ir para Contato">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home" class="bg-cover bg-center h-96 flex items-center justify-center" style="background-image: url('https://images.unsplash.com/photo-1500595046743-ee5f3d3d2f98?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80')">
+    <div class="text-center text-white bg-black bg-opacity-50 p-8 rounded">
+      <h2 class="text-4xl font-bold mb-4">Excelência em Consultoria para o Agronegócio</h2>
+      <p class="text-lg">Conectando produtores rurais e frigoríficos com transparência e objetividade.</p>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="sobre" class="py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8">Sobre Nós</h2>
+      <div class="flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-8 md:mb-0">
+          <img src="https://images.unsplash.com/photo-1581291518633-83b4377ef598?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Imagem representando o agronegócio" class="rounded-lg shadow-lg">
+        </div>
+        <div class="md:w-1/2 md:pl-8">
+          <p class="text-lg mb-4">A <strong>MS Consultoria em Agronegócio LTDA</strong>, fundada em 2019, é liderada por dois profissionais experientes: o Médico Veterinário Sergio Castaman e o Administrador de Empresas Magno Santana. Com atuação em gigantes do setor, trazemos empatia, transparência e objetividade na prestação de serviços para produtores rurais e frigoríficos, buscando os melhores resultados para ambas as partes.</p>
+          <p class="text-lg">Somos representantes comerciais exclusivos da <strong>Connan Nutrição Animal</strong>, empresa pertencente à família Cardoso Penteado, fundadora da Manah, líder no mercado de fertilizantes agrícolas nas décadas de 70 e 80.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission, Vision, Values Section -->
+  <section class="bg-gray-200 py-16">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <h3 class="text-2xl font-semibold mb-4">Missão</h3>
+          <p>Temos por objetivo a excelência nos serviços que prestamos.</p>
+        </div>
+        <div class="text-center">
+          <h3 class="text-2xl font-semibold mb-4">Visão</h3>
+          <p>Atuar na prestação de serviços para produtores rurais e frigoríficos, buscando o melhor resultado para ambas as partes.</p>
+        </div>
+        <div class="text-center">
+          <h3 class="text-2xl font-semibold mb-4">Valores</h3>
+          <p>Empatia, Transparência e Objetividade. Segurança no trabalho e conforto aos seus colaboradores.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="servicos" class="py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8">Nossos Serviços</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <h3 class="text-xl font-semibold mb-4">Consultoria para Produtores Rurais</h3>
+          <p>Oferecemos suporte especializado para otimizar a produção e negociação, garantindo resultados eficientes e sustentáveis.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <h3 class="text-xl font-semibold mb-4">Parcerias com Frigoríficos</h3>
+          <p>Facilitamos negociações transparentes e justas, conectando frigoríficos e produtores com foco em resultados mútuos.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <h3 class="text-xl font-semibold mb-4">Representação Comercial</h3>
+          <p>Representamos exclusivamente a Connan Nutrição Animal, oferecendo produtos de alta qualidade para o agronegócio.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <h3 class="text-xl font-semibold mb-4">Assessoria Técnica</h3>
+          <p>Prestamos assessoria técnica com base em nossa expertise em negociação e abate de bovinos, garantindo segurança e eficiência.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contato" class="bg-green-700 text-white py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-8">Entre em Contato</h2>
+      <p class="text-lg mb-4">Quer saber mais sobre nossos serviços? Entre em contato conosco!</p>
+      <p class="text-lg mb-4">Email: <a href="mailto:contato@msconsultoria.com.br" class="underline">contato@msconsultoria.com.br</a></p>
+      <p class="text-lg mb-4">Telefone: <a href="tel:+551112345678" class="underline">(11) 1234-5678</a></p>
+      <div class="mt-8">
+        <p class="text-lg mb-4">Envie-nos uma mensagem:</p>
+        <div class="max-w-md mx-auto">
+          <input type="text" placeholder="Seu Nome" class="w-full p-2 mb-4 rounded" aria-label="Nome">
+          <input type="email" placeholder="Seu Email" class="w-full p-2 mb-4 rounded" aria-label="Email">
+          <textarea placeholder="Sua Mensagem" class="w-full p-2 mb-4 rounded" rows="4" aria-label="Mensagem"></textarea>
+          <button class="bg-white text-green-700 px-4 py-2 rounded hover:bg-gray-200" disabled>Enviar (Funcionalidade em Desenvolvimento)</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-4">
+    <div class="container mx-auto px-4 text-center">
+      <p>© 2025 MS Consultoria em Agronegócio LTDA. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Smooth Scroll Script -->
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
